@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
 
 	def self.auth(email, password)
 		u = User.find_by(email: email)
-		return u if u.auth(password)
+		return u if u && u.auth(password)
 	end
 
 	def auth(password) 
