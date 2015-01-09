@@ -19,6 +19,21 @@ class User < ActiveRecord::Base
 		self.password_digest == BCrypt::Engine.hash_secret(password, self.password_salt)
 	end
 
+	def token!
+		generate_token!	unless self.auth_token
+		self.auth_token
+	end
+
+	def generate_token!
+		self.auth_token = "#{self.id}::#{SecureRandom.hex}"
+		save!
+	end
+
+	def clear_token!
+		self.auth_token = nil
+		save!
+	end
+
 	protected
 
 	def hash_password

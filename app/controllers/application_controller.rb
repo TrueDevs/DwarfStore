@@ -7,20 +7,23 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def log_in(user)
-  	session[:user_id] = user.id if user && user.persisted?
+  def sign_in(user)
+  	session[:token] = user.token! if user && user.persisted?
+  end
+
+  def sign_out
+    session[:token] = nil
   end
 
   private
 
   def current_user
-  	id = session[:user_id]
-  	if id
-  		if @current_user == nil || @current_user.id != id
-  			@current_user = User.find(id)
-  		end
-
-  		@current_user
-  	end
+    token = session[:token]
+  	if token
+  		if @current_user.nil? || @current_user.auth_token != token
+        @current_user = User.find_by(auth_token: token) 
+      end
+      @current_user
+    end
   end
 end
