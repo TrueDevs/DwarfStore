@@ -1,0 +1,14 @@
+<% if @user %>
+	<h1>Set new password</h1>
+	
+	<%= form_tag user_password_path, method: :patch do %>
+		<%= label_tag :password %>
+		<%= password_field_tag :password %>
+
+		<p>
+			<%= submit_tag 'Set' %>
+		</p>
+	<% end %>
+<% else %>
+	<h1>No such reset token or it's expired!</h1>
+<% end %>

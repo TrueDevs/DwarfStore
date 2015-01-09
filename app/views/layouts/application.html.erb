@@ -12,10 +12,10 @@
 	<li><%= link_to 'Main', '/' %></li>
 
 	<% if current_user %>
-		<li>Hi, <%= current_user.email%> <%= link_to 'Sign out', 'sign_out', method: :delete %></li>
+		<li>Hi, <%= current_user.email%> <%= link_to 'Sign out', sign_out_path, method: :delete %></li>
 	<% else %>
-		<li><%= link_to 'Sing in', 'sign_in' %></li>
-		<li><%= link_to 'Sign up', 'sign_up' %></li>
+		<li><%= link_to 'Sing in', sign_in_path %></li>
+		<li><%= link_to 'Sign up', sign_up_path %></li>
 	<% end %>
 </ul>
 

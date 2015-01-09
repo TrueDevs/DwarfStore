@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
 		email_format: { message: "doesn't look like an email address" }
 
 	validates :password_digest, presence: true
-	validates :password, length: { in: 6..32}, presence: true
+	validates :password, length: { in: 6..32}, if: :check_password?
 
 	def self.auth(email, password)
 		u = User.find_by(email: email)
@@ -35,6 +35,10 @@ class User < ActiveRecord::Base
 	end
 
 	protected
+
+	def check_password?
+		@password.present?
+	end
 
 	def hash_password
 		return unless self.password
