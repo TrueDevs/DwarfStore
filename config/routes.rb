@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   match 'sign_out' => 'sessions#destroy', as: :sign_out, via: :delete
 
   root to: 'home#index'
-  resources :users, only: [:new, :create]
+  resources :users, only: [:new, :create, :index]
   resources :sessions, only: [:new, :create, :destroy]
   resources :user_password, only: [:new, :create, :edit, :update]
   

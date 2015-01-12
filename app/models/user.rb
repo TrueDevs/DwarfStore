@@ -34,6 +34,25 @@ class User < ActiveRecord::Base
 		save!
 	end
 
+	def user_rights
+		return 'Super user' if super_user?
+		return 'Moderator' if moderator?
+		return 'Saller' if saller?
+		return 'User'
+	end
+
+	def super_user?
+		role > 2
+	end
+
+	def moderator?
+		role > 1
+	end
+
+	def saller?
+		role > 0
+	end
+
 	protected
 
 	def check_password?
