@@ -1,7 +1,6 @@
 ready = ->
 
 	###  CHANGE EMAIL EVENTS  ###
-	
 	action_url = $('#email').closest('form').attr('action')
 
 	close_and_clear_dialog = (event) ->
@@ -43,6 +42,10 @@ ready = ->
 
 		close_and_clear_dialog(event)
 
+
+	info_dialog = $('#info_dialog')
+	info_block = info_dialog.find('p')
+
 	### CHANGE PASSWORD EVENTS ###
 	$('#change_password').on 'click', (event) ->
 		event.preventDefault()
@@ -54,9 +57,6 @@ ready = ->
 		old_password = old_pass_input.val()
 		new_password = new_pass_input.val()
 
-		dialog = $('#password_change_dialog')
-		info_block = dialog.find('p')
-
 		$.ajax
 			type: 'PATCH'
 			url: action_url
@@ -64,18 +64,70 @@ ready = ->
 			success: (data) ->
 				info_block.removeClass('error')
 				info_block.text('Changed successfuly!')
-				dialog.foundation('reveal', 'open')
+				info_dialog.foundation('reveal', 'open')
 				return true
 			error: (data) ->
 				error_obj = JSON.parse(data.responseText)
 
 				info_block.addClass('error')
 				info_block.text(error_obj['error'])
-				dialog.foundation('reveal', 'open')
+				info_dialog.foundation('reveal', 'open')
 				return false
 
 		old_pass_input.val('')
 		new_pass_input.val('')
+
+	### CHANGE USER ROLE EVENTS ###
+	$('#change_role').on 'click', (event) ->
+		event.preventDefault()
+
+		new_role = $('input[name=role]:checked').val()
+		$.ajax
+			type: 'PATCH'
+			url: action_url
+			data: {user: {role: new_role, change_role_only: true}}
+			success: (data) ->
+				info_block.removeClass('error')
+				info_block.text('Role changed!')
+				info_dialog.foundation('reveal', 'open')
+				return true
+			error: (data) ->
+				error_obj = JSON.parse(data.responseText)
+
+				info_block.addClass('error')
+				info_block.text(error_obj['error'])
+				info_dialog.foundation('reveal', 'open')
+				return false
+
+	### CHANGE BAN STATUS EVENTS ###
+	ban_user = (ban) ->
+		$.ajax
+			type: 'PATCH'
+			url: action_url
+			data: {user: {banned: ban}}
+			success: (data) ->
+				banned = data['banned']
+
+				$('#status_ban').prop('disabled', banned)
+				$('#status_unban').prop('disabled', !banned)
+
+				if (banned)
+					$('#ban_info').show()
+					$('#banned_date').text(data['banned_date'])
+				else
+					$('#ban_info').hide()
+
+				return true
+			error: (data) ->
+				return false
+
+	$('#status_ban').on 'click', (event) ->
+		event.preventDefault()
+		ban_user(true)
+
+	$('#status_unban').on 'click', (event) ->
+		event.preventDefault()
+		ban_user(false)
 
 ### REGISTER JQUERY FUNCION ON LOAD AND ON CHANGE ###
 $(document).ready(ready)

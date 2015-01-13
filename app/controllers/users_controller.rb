@@ -52,12 +52,17 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
 
     if params[:user][:banned] #change banned status
-      ban_action(@user, params[:user][:banned]) 
+      ban_action(@user, params[:user][:banned])
       return
     end
 
     if params[:user][:change_email_only]
       change_email(@user, params[:user][:password], params[:user][:email])
+      return
+    end
+
+    if params[:user][:change_role_only]
+      change_role(@user, params[:user][:role])
       return
     end
 
@@ -69,6 +74,18 @@ class UsersController < ApplicationController
 
   protected 
 
+  def change_role(user, role) 
+    new_role = 0; #default role
+    new_role = 2 if role == 'moderator'
+    new_role = 1 if role == 'seller'
+
+    if user.update(role: new_role)
+      render json: user, status: 200
+    else
+      render json: '{"error" : "Something bad happen! Role does not changed!"}', status: 420
+    end
+  end
+
   def ban_action(user, banned)
     banned = to_boolean(banned) if banned.instance_of? String
 
@@ -78,11 +95,7 @@ class UsersController < ApplicationController
       @user.clear_ban current_user
     end
 
-    respond_to do |format|
-      format.html {redirect_to root_path}
-      format.js {}
-      format.json { render json: @user }
-    end
+    render json: @user
   end
 
   def change_password(user, password, new_password)

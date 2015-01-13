@@ -41,13 +41,59 @@
 					</label>
 
 					<a href="#" id='change_password' class="button expand" style='margin: 0;'>Change</a>
+				</fieldset>
+			<% end %>
 
-					<div id="password_change_dialog" class="reveal-modal" data-reveal>
-						<p>Your couch.  It is mine.</p>
-						<a class="close-reveal-modal">&#215;</a>
+			<% if !@user.super_user? && current_user.super_user? %>
+				<fieldset id='role'>
+					<legend>User role</legend>
+
+					<input type="radio" name="role" value="moderator" id="moderator"
+						<% if @user.moderator? %>
+							checked
+						<% end %>
+							>
+						<label for="moderator">Moderator (can ban other users)</label>
+					<input type="radio" name="role" value="seller" id="seller"						
+						<% if !@user.moderator? && @user.saller? %>
+							checked
+						<% end %>
+							>
+						<label for="seller">Seller (Can sell gems)</label>
+					<input type="radio" name="role" value="user" id="user"						
+						<% if !@user.saller? %>
+							checked
+						<% end %>
+							>
+						<label for="user">User - can only buy</label>
+
+					<a href="#" id='change_role' class="button expand" style='margin: 0;'>Change</a>
+				</fieldset>
+
+				<fieldset id='ban_status'>
+					<legend>Ban status</legend>
+					<input type='button' value='Ban' class="button tiny" id='status_ban'
+						<% if @user.banned? %>
+							disabled
+						<% end %> >
+					<input type='button' value='Unban' class="button tiny" id='status_unban'
+						<% if !@user.banned? %>
+							disabled
+						<% end %> >
+					<div id='ban_info' 
+						<% if !@user.banned? %>
+							style='display: none;'
+						<% end %>
+							>
+						<p>Banned date: <span id='banned_date'><%= @user.banned_date %></span></p>
 					</div>
 				</fieldset>
 			<% end %>
+
+			<div id="info_dialog" class="reveal-modal" data-reveal>
+				<p>Your couch.  It is mine.</p>
+				<a class="close-reveal-modal">&#215;</a>
+			</div>
 		<% end %>
 	</div>
 </div>

@@ -5,7 +5,6 @@
 			<th>#</th>
 			<th>email</th>
 			<th>rights</th>
-			<th>ban?</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -15,16 +14,6 @@
 				<td><%= link_to user.email, 
 					edit_user_path(user) %></td>
 				<td><%= user.user_rights%></td>
-				<% if user.super_user? %>
-					<td>Can't be banned!</td>
-				<% else %>
-					<td class='unban_td' <%= raw append_hide_style(!user.banned)%>>
-						<%= link_to 'Unban', user_path(id: user.id, 'user[banned]' => false), class: 'tiny button', remote: true, method: :patch %>
-					</td>
-					<td class='ban_td' <%= raw append_hide_style(user.banned)%>>
-						<%= link_to 'Ban', user_path(id: user.id, 'user[banned]' => true), class: 'tiny button', remote: true, method: :patch %>
-					</td>
-				<% end %>
 			</tr>
 		<% end %>
 	</tbody>
