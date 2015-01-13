@@ -1,0 +1,40 @@
+<div class="row">
+	<div class="large-8">
+		<%= form_for @user do |f| %>
+			<fieldset id='email'>
+				<legend>Email setting</legend>
+
+				<div class="row collapse">
+					<div class="small-10 columns">
+						<input type="text"  name='email' value="<%= @user.email %>">
+					</div>
+					<div class="small-2 columns">
+						<a href="#" class="button postfix"  data-reveal-id="change_email_dialog">Change</a>
+					</div>
+					<small class="error" style="display: none;">Error place</small>
+
+					<div id="change_email_dialog" class="reveal-modal tiny" data-reveal>
+						<p>Need password for this change!</p>
+						<input type="password"  name='password' placeholder='password'>
+						<a href='#' id='send_email_dialog' class='button tiny' style='margin: 0;'>Change</a>
+						<a href='#' id='cancel_email_dialog' class='button tiny right' style='margin: 0;'>Cancel</a>
+					</div>
+				</div>
+			</fieldset>
+
+			<% if @user == current_user %>
+				<fieldset id='password'>
+					<legend>Password setting</legend>
+
+					<label>Old password
+						<input type="password" name='old_password' placeholder='old password'>
+					</label>
+					<label>New password
+						<input type="password" name='password' placeholder='new password'>
+					</label>
+
+				</fieldset>
+			<% end %>
+		<% end %>
+	</div>
+</div>

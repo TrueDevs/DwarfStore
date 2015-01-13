@@ -1,0 +1,7 @@
+<% if @user.banned? %>
+	$('#user_<%= @user.id %>').find('.ban_td').hide();
+	$('#user_<%= @user.id %>').find('.unban_td').show();
+<% else %>
+	$('#user_<%= @user.id %>').find('.unban_td').hide();
+	$('#user_<%= @user.id %>').find('.ban_td').show();
+<% end %>

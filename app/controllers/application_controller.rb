@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  helper_method :current_user
+  helper_method :current_user, :append_hide_style
 
   protected
 
@@ -15,7 +15,17 @@ class ApplicationController < ActionController::Base
     session[:token] = nil
   end
 
+  def to_boolean(str)
+    str == 'true'
+  end
+
   private
+
+  def append_hide_style(append)
+    return '' if !append
+
+    return 'style="display: none;"'
+  end
 
   def current_user
     token = session[:token]
