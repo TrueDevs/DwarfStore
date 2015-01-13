@@ -6,10 +6,17 @@
 
 				<div class="row collapse">
 					<div class="small-10 columns">
-						<input type="text"  name='email' value="<%= @user.email %>">
+						<input type="text"  name='email' value="<%= @user.email %>"
+							<% if @user != current_user %>
+								disabled
+							<% end %>>
 					</div>
 					<div class="small-2 columns">
-						<a href="#" class="button postfix"  data-reveal-id="change_email_dialog">Change</a>
+						<a href="#" class="button postfix"  data-reveal-id="change_email_dialog" 
+							<% if @user != current_user %>
+								disabled
+							<% end %>
+							>Change</a>
 					</div>
 					<small class="error" style="display: none;">Error place</small>
 
@@ -30,9 +37,15 @@
 						<input type="password" name='old_password' placeholder='old password'>
 					</label>
 					<label>New password
-						<input type="password" name='password' placeholder='new password'>
+						<input type="password" name='new_password' placeholder='new password'>
 					</label>
 
+					<a href="#" id='change_password' class="button expand" style='margin: 0;'>Change</a>
+
+					<div id="password_change_dialog" class="reveal-modal" data-reveal>
+						<p>Your couch.  It is mine.</p>
+						<a class="close-reveal-modal">&#215;</a>
+					</div>
 				</fieldset>
 			<% end %>
 		<% end %>

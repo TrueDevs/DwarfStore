@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :correct_user, only: [:index, :update]
+  before_action :correct_user, only: [:index, :update, :edit]
 
   def new
   	@user = User.new
@@ -56,8 +56,13 @@ class UsersController < ApplicationController
       return
     end
 
-    if params[:user][:email] #change email
+    if params[:user][:change_email_only]
       change_email(@user, params[:user][:password], params[:user][:email])
+      return
+    end
+
+    if params[:user][:change_password_only]
+      change_password(@user, params[:user][:old_password], params[:user][:new_password])
       return
     end
   end
@@ -80,9 +85,27 @@ class UsersController < ApplicationController
     end
   end
 
+  def change_password(user, password, new_password)
+    unless user.auth(password)
+      render json: '{ "error" : "Wrong password!" }', status: 403
+      return
+    end
+
+    if new_password.nil? || new_password.length <= 0
+      render json: '{ "error": "Password can not be empty and must contain at least 3 symbols" }', status: 406
+      return
+    end
+
+    if user.update(password: new_password)
+      render json: user, status: 200
+    else
+      render json: user.errors.full_messages, status: 406
+    end
+  end
+
   def change_email(user, password, new_email)
     unless user.auth(password)
-      render json: '{ error: "Access denied!" }', status: 403 
+      render json: '{ "error" : "Access denied!" }', status: 403 
       return
     end
 
@@ -97,16 +120,18 @@ class UsersController < ApplicationController
   	params.require(:user).permit(:email, :password)
   end
 
-  def correct_user(user=nil)
-    access_denied = current_user.nil? #guest 
-    access_denied ||= !current_user.super_user? # user that are not super user
+  def correct_user
+    user = User.find(params[:id]) if params[:id]
+
+    access_denied = current_user.nil? #guest
+    access_denied = !current_user.super_user? && current_user != user
     access_denied ||= !user.nil? && user.super_user? && (user != current_user) # super user has no access to other superuses! 
     
     return unless access_denied
 
     respond_to do |format|
       format.html { redirect_to root_path}
-      format.json { render json: '{ error: "Access denied!" }', status: 403 }
+      format.json { render json: '{ "error": "Access denied!" }', status: 403 }
     end
   end
 end

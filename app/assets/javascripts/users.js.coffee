@@ -2,6 +2,8 @@ ready = ->
 
 	###  CHANGE EMAIL EVENTS  ###
 	
+	action_url = $('#email').closest('form').attr('action')
+
 	close_and_clear_dialog = (event) ->
 		event.preventDefault()
 		dialog = $('#change_email_dialog')
@@ -21,12 +23,11 @@ ready = ->
 		password = password_input.val()
 
 		error_block = $('#email').find('.error')
-		action_url = $('#email').closest('form').attr('action')
 		
 		$.ajax
 			type: 'PATCH'
 			url: action_url
-			data: { user: {password: password, email: email} }
+			data: { user: {password: password, email: email, change_email_only: true} }
 			success: (data) ->
 				console.log('success: ' + data)
 				error_block.hide()
@@ -41,6 +42,40 @@ ready = ->
 				return false
 
 		close_and_clear_dialog(event)
+
+	### CHANGE PASSWORD EVENTS ###
+	$('#change_password').on 'click', (event) ->
+		event.preventDefault()
+
+		pass_scope = $('#password')
+		old_pass_input = pass_scope.find('input[name="old_password"]')
+		new_pass_input = pass_scope.find('input[name="new_password"]')
+
+		old_password = old_pass_input.val()
+		new_password = new_pass_input.val()
+
+		dialog = $('#password_change_dialog')
+		info_block = dialog.find('p')
+
+		$.ajax
+			type: 'PATCH'
+			url: action_url
+			data: {user: {old_password: old_password, new_password: new_password, change_password_only: true}}
+			success: (data) ->
+				info_block.removeClass('error')
+				info_block.text('Changed successfuly!')
+				dialog.foundation('reveal', 'open')
+				return true
+			error: (data) ->
+				error_obj = JSON.parse(data.responseText)
+
+				info_block.addClass('error')
+				info_block.text(error_obj['error'])
+				dialog.foundation('reveal', 'open')
+				return false
+
+		old_pass_input.val('')
+		new_pass_input.val('')
 
 ### REGISTER JQUERY FUNCION ON LOAD AND ON CHANGE ###
 $(document).ready(ready)

@@ -15,6 +15,10 @@
 
 	<% if current_user %>
 		<li>Hi, <%= current_user.email%> <%= link_to 'Sign out', sign_out_path, method: :delete %></li>
+		<li><%= link_to 'Profile', edit_user_path(current_user) %></li>
+		<%if current_user.super_user? %>
+			<li><%= link_to 'Users', users_path %></li>
+		<% end %>
 	<% else %>
 		<li><%= link_to 'Sing in', sign_in_path %></li>
 		<li><%= link_to 'Sign up', sign_up_path %></li>

@@ -14,4 +14,8 @@
  *= require_tree .
  *= require_self
  */
-$(document).foundation();
+
+.error {
+	color: red;
+	font-weight: bold;
+}
